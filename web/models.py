@@ -5,14 +5,16 @@ import datetime
 from app import db
 
 
-class Post(db.Model):
+class Box(db.Model):
 
-    __tablename__ = 'posts'
+    __tablename__ = 'Boxes'
 
     id = db.Column(db.Integer, primary_key=True)
-    text = db.Column(db.String, nullable=False)
-    date_posted = db.Column(db.DateTime, nullable=False)
+    x = db.Column(db.Integer, nullable=False)
+    y = db.Column(db.Integer, nullable=False)
+    z = db.Column(db.Integer, nullable=False)
 
-    def __init__(self, text):
-        self.text = text
-        self.date_posted = datetime.datetime.now()
+    def __init__(self, x=1,y=1,z=1):
+        self.x = x
+        self.y = y
+        self.z = z
