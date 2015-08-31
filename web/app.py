@@ -18,12 +18,14 @@ from models import *
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
-        text = request.form['text']
-        post = Post(text)
+        x = request.form['dim-x']
+        y = request.form['dim-y']
+        z = request.form['dim-z']
+        box = Box(x,y,z)
         db.session.add(post)
         db.session.commit()
-    posts = Post.query.order_by(Post.date_posted.desc()).all()
-    return render_template('index.html', posts=posts)
+    boxes = Post.query.order_by(Box.volume.desc()).all()
+    return render_template('index.html', boxes=boxes)
 
 
 if __name__ == '__main__':
