@@ -16,7 +16,6 @@ class BaseConfig(object):
         DB_USER, DB_PASS, DB_SERVICE, DB_PORT, DB_NAME
     )
 
-
 # class BaseConfig(object):
 #     SECRET_KEY = 'hi'
 #     DEBUG = True
