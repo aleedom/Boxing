@@ -10,9 +10,10 @@
 
 <form action="/" method="POST">
   <div class="form-group">
-    <input name="dim-x" class="form-control input-sm" type="text" placeholder="Enter the length of the Merchandise" required>
-    <input name="dim-y" class="form-control input-sm" type="text" placeholder="Enter the width of the Merchandise" required>
-    <input name="dim-z" class="form-control input-sm" type="text" placeholder="Enter the height of the Merchandise" required>
+    <input name="x_size" class="form-control input-sm" type="text" placeholder="X" required>
+    <input name="y_size" class="form-control input-sm" type="text" placeholder="Y" required>
+    <input name="z_size" class="form-control input-sm" type="text" placeholder="Z" required>
+    <input name="amount" class="form-control input-sm" type="text" placeholder="Amount" required>
   </div>
   <input type="submit" class="btn btn-primary btn-lg btn-block" value="Submit">
 </form>
@@ -21,7 +22,8 @@
 <hr>
 
 <div>
-  {% for post in posts %}
+  {% for name in boxes %}
+    <h4 class="well"><strong>{{box.name}}</strong> - <em>{{box.tag}}</em></h4>
   {% endfor %}
 </div>
 

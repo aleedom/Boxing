@@ -1,21 +1,19 @@
 from flask import Flask
 from flask import request, render_template
-#from flask.ext.sqlalchemy import SQLAlchemy
-#from config import BaseConfig
+from flask.ext.sqlalchemy import SQLAlchemy
 
+from config import BaseConfig
 
 app = Flask(__name__)
-#app.config.from_object(BaseConfig)
-#db = SQLAlchemy(app)
+app.config.from_object(BaseConfig)
+db = SQLAlchemy(app)
 
+from models import *
 
-#from models import *
+@app.route('/', methods=['GET', 'POST'])
+def hello():
+    b = Box.query.all()
+    return render_template('index.html',boxes=b)
 
-
-#@app.route('/', methods=['GET', 'POST'])
-def index():
-    return "Hello WOrld"
-
-
-if __name__ == '__main__':
-    app.run(debug=True)
+if __name__ == "__main__":
+    app.run(host="0.0.0.0",port=5000, debug=True)
