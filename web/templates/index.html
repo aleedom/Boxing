@@ -15,15 +15,18 @@
     <input name="z_size" class="form-control input-sm" type="text" placeholder="Z" required>
     <input name="amount" class="form-control input-sm" type="text" placeholder="Amount" required>
   </div>
-  <input type="submit" class="btn btn-primary btn-lg btn-block" value="Submit">
+  <input type="submit" class="btn btn-primary btn-lg btn-block" value="Add to Box">
+  <input type="submit" class="btn btn-primary btn-lg btn-block" value="New Order">
 </form>
 
 <br>
 <hr>
 
 <div>
-  {% for name in boxes %}
-    <h4 class="well"><strong>{{box.name}}</strong> - <em>{{box.tag}}</em></h4>
+  {% for item in context['merch'] %}
+    <h4 class="well">{{item.x}}x{{item.y}}x{{item.z}}-{{item.amount}}</h4>
+    <div class="btn btn-primary btn-sm btn-block" value="edit"></div>
+    <div class="btn btn-primary btn-sm btn-block" value="delete"></div>
   {% endfor %}
 </div>
 
