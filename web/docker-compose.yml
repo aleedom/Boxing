@@ -1,9 +1,9 @@
 web:
-    build: .
+    build: ./web
     ports:
        - "5000:5000"
     volumes:
-       - .:/code
+       - ./web/code
     links:
        - postgres
     env_file: .env

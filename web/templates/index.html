@@ -7,27 +7,7 @@
 </div>
 
 <br>
-
-<form action="/" method="POST">
-  <div class="form-group">
-    <input name="x_size" class="form-control input-sm" type="text" placeholder="X" required>
-    <input name="y_size" class="form-control input-sm" type="text" placeholder="Y" required>
-    <input name="z_size" class="form-control input-sm" type="text" placeholder="Z" required>
-    <input name="amount" class="form-control input-sm" type="text" placeholder="Amount" required>
-  </div>
-  <input type="submit" class="btn btn-primary btn-lg btn-block" value="Add to Box">
-  <input type="submit" class="btn btn-primary btn-lg btn-block" value="New Order">
-</form>
-
-<br>
-<hr>
-
-<div>
-  {% for item in context['merch'] %}
-    <h4 class="well">{{item.x}}x{{item.y}}x{{item.z}}-{{item.amount}}</h4>
-    <div class="btn btn-primary btn-sm btn-block" value="edit"></div>
-    <div class="btn btn-primary btn-sm btn-block" value="delete"></div>
-  {% endfor %}
+<div id="container">
+<!-- This will be where the react app goes-->
 </div>
-
 {% endblock %}

@@ -7,7 +7,7 @@ Created by Maximillian Dornseif on 2010-08-16.
 Copyright (c) 2010 HUDORA. All rights reserved.
 """
 
-
+import package
 import binpack_simple
 
 
@@ -32,18 +32,14 @@ def test(func):
             continue
         bins, rest = func(packages)
         if rest:
-            print "invalid data", rest, line
+            print( "invalid data", rest, line)
         else:
             vorher += len(packages)
             nachher += len(bins)
-    print time.time() - start,
-    print vorher, nachher, float(nachher) / vorher * 100
+    print( time.time() - start)
+    print( vorher, nachher, float(nachher) / vorher * 100)
 
 
 if __name__ == '__main__':
-    print "py",
+    print("py")
     test(binpack)
-
-
-import time
-from pyshipping.package import Package

@@ -1,4 +1,4 @@
-,from flask import Flask
+from flask import Flask
 from flask import request, render_template
 from flask.ext.sqlalchemy import SQLAlchemy
 
@@ -23,7 +23,7 @@ def Boxing():
         m = Package(request.form['x'],request.form['y'],request.form['z'])
         context['merch'].append(m)
 
-    return render_template('index.html',context=data)
+    return render_template('index.html',context=context)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0",port=5000, debug=True)
