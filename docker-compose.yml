@@ -1,13 +1,35 @@
 web:
     build: ./web
-    ports:
-       - "5000:5000"
+    expose:
+        - "8000"
     volumes:
-       - ./web:/code
+        - ./web:/web
+        - /usr/src/app/static
     links:
-       - postgres
+        - postgres:postgres
     env_file: .env
+    command: /usr/local/bin/gunicorn -w 2 -b :8000 app:app
+
+nginx:
+    build: ./nginx
+    ports:
+        - "80:80"
+    volumes:
+        - /www/static
+    volumes_from:
+        - web
+    links:
+        - web:web
+
+data:
+    image: postgres:latest
+    volumes:
+        - /var/lib/postgresql
+    command: "true"
+
 postgres:
     image: postgres:latest
+    volumes_from:
+        - data
     ports:
         - "5432:5432"

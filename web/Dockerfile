@@ -1,6 +1,5 @@
-FROM python:latest
-COPY . /app
-WORKDIR /app
+FROM python:2.7
+ADD . /web
+WORKDIR /web
 RUN pip install -r requirements.txt
-ENTRYPOINT ["python"]
-CMD ["app.py"]
+CMD python app.py
