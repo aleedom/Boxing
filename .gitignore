@@ -39,6 +39,3 @@ ehthumbs.db
 Thumbs.db
 
 
-# project specific #
-######################
-./web/static/assets/libs/*
