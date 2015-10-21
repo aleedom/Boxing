@@ -4,12 +4,12 @@ from flask.ext.sqlalchemy import SQLAlchemy
 from config import BaseConfig
 
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='./static')
 app.config.from_object(BaseConfig)
 db = SQLAlchemy(app)
 
 
-from models import *
+from models import Post
 
 
 @app.route('/', methods=['GET', 'POST'])
