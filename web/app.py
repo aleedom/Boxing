@@ -4,6 +4,8 @@ from flask.ext.sqlalchemy import SQLAlchemy
 from config import BaseConfig
 from flask_restful import Api, Resource
 
+from multibox import fit_to_boxes, Package
+
 
 app = Flask(__name__, template_folder='./static')
 app.config.from_object(BaseConfig)
@@ -15,13 +17,33 @@ def volume(item):
     return item['length']*item['width']*item['height']*item['amount']
 
 
+def to_Package(items):
+    """
+    This functoin is meant to turn a list of dictionaries into a list of package objects
+    input
+        items : [{'length': <val>, 'width': <val>, 'height': <val>, 'amount': <val>}, ...]
+    output
+        [pkg, pkg, ...]
+    """
+    result = []
+    for item in items:
+        s_item = "{}x{}x{}".format(item['length'], item['width'], item['height'], item['amount'])
+        p_item = Package(s_item)
+        result.extend([p_item] * item['amount'])
+    return result
+
+
 class Box(Resource):
     def post(self):
-        box = request.get_json(force=True)
-        total_volume = 0
-        for item in box:
-            total_volume += volume(item)
-        return total_volume
+        items = request.get_json(force=True)
+        # items is a list of dictionaries need to convert to
+        # a list of Pacakge() objects
+        package_items = to_Package(items)
+
+        # do the calculation
+        result = fit_to_boxes(package_items)
+
+        return result
 
 api.add_resource(Box, '/api/box_order')
 
