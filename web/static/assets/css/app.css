@@ -1,0 +1,10 @@
+.done {
+    text-decoration: line-through;
+    color: #ccc;
+}
+.red{
+    color: red;
+}
+a.glyphicon-remove {
+    font-size: 2em;
+}

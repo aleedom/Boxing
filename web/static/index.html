@@ -1,27 +1,83 @@
-{% extends "_base.html" %}
+<!doctype html>
+<html lang="en" ng-app=Todo>
+<head>
+  <meta charset="utf-8">
+  <title>ng-Boxing</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/libs/bootstrap/dist/css/bootstrap.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/app.css') }}">
 
-{% block content %}
+</head>
+<body>
 
-<div class="text-center">
-  <h1>Welcome!</h1>
-</div>
+    <div class="container" ng-controller="boxCtrl">
+        <div class="row">
+            <div class="well col-md-4 col-sm-offset-4">
+                <div class="row">
+                    <h3 class="text-center">New Item</h3>
+                    <br/>
+                    <form class="form form-horizontal" autocomplete="off" name="frm" ng-submit="addItem()">
 
-<br>
+                        <div class="form-group">
+                            <label class="form-label col-xs-2 col-xs-offset-3">Length:</label>
+                            <div class="col-md-4">
+                                <input class="form-control" type="number" placeholder="0" name="length" ng-model="length" required/>
+                            </div>
+                        </div>
 
-<form action="/" method="POST">
-  <div class="form-group">
-    <input name="text" class="form-control input-lg" type="text" placeholder="Enter a message" required>
-  </div>
-  <input type="submit" class="btn btn-primary btn-lg btn-block" value="Submit">
-</form>
+                        <div class="form-group">
+                            <label class="form-label col-xs-2 col-xs-offset-3">Width:</label>
+                            <div class="col-md-4">
+                                <input class="form-control" type="number" placeholder="0" name="width" ng-model="width" required/>
+                            </div>
+                        </div>
 
-<br>
-<hr>
+                        <div class="form-group">
+                            <label class="form-label col-xs-2 col-xs-offset-3">Height:</label>
+                            <div class="col-md-4">
+                                <input class="form-control" type="number" placeholder="0" name="height" ng-model="height" required/>
+                            </div>
+                        </div>
 
-<div>
-  {% for post in posts %}
-    <h4 class="well"><strong>{{post.text}}</strong> - <em>{{post.date_posted.strftime('%Y-%m-%d')}}</em></h4>
-  {% endfor %}
-</div>
+                        <div class="form-group">
+                            <label class="form-label col-xs-2 col-xs-offset-3">Amount:</label>
+                            <div class="col-md-4">
+                                <input class="form-control" type="number" placeholder="0" name="amount" ng-model="amount" required/>
+                            </div>
+                        </div>
+                        <div class="col-md-9 col-xs-offset-3">
+                            <button class="btn btn-primary" ng-disabled="frm.$invalid">Add to Order</button>
+                        </div>
+                    </form>
 
-{% endblock %}
+                </div>
+
+            </div>
+        </div>
+
+
+        </br>
+
+
+            <div class="well row">
+                <h3 class="text-center col-xs-2 col-xs-offset-5">Current Order {[order_volume]}</h3>
+
+
+                <div class="list-group">
+                    <div class="row">
+                        <div class="list-group-item col-sm-12" ng-repeat="todo in todos">
+                            <a class="glyphicon glyphicon-remove pull-right text-danger" ng-click="removeItem($index)"></a>
+                            <h5 class="col-sm-3">Length: {[todo.length]}</h5>
+                            <h5 class="col-sm-3">Width: {[todo.width]}</h5>
+                            <h5 class="col-sm-3">Height: {[todo.height]}</h5>
+                            <h5 class="col-sm-2">Amount: {[todo.amount]}</h5>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-success pull-right" ng-click="boxOrder()" ng-show="todos.length">Box Order</button>
+                <button class="btn btn-danger pull-right" ng-click="clearAll()" ng-show="todos.length">Clear All</button>
+            </div>
+    </div>
+  <script type="text/javascript"src="{{ url_for('static', filename='assets/libs/angular/angular.min.js') }}"></script>
+  <script type="text/javascript"src="{{ url_for('static', filename='app/app.module.js') }}"></script>
+</body>
+</html>
