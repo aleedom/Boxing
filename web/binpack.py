@@ -32,18 +32,18 @@ def test(func):
             continue
         bins, rest = func(packages)
         if rest:
-            print "invalid data", rest, line
+            print("invalid data", rest, line)
         else:
             vorher += len(packages)
             nachher += len(bins)
-    print time.time() - start,
-    print vorher, nachher, float(nachher) / vorher * 100
+    print(time.time() - start,)
+    print(vorher, nachher, float(nachher) / vorher * 100)
 
 
 if __name__ == '__main__':
-    print "py",
+    print("py",_)
+
     test(binpack)
 
 
 import time
-from pyshipping.package import Package

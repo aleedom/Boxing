@@ -27,12 +27,12 @@ class Package(object):
         """
         self.weight = weight
         if "x" in size:
-            self.heigth, self.width, self.length = [int(x) for x in size.split('x')]
+            self.heigth, self.width, self.length = [float(x) for x in size.split('x')]
         else:
             self.heigth, self.width, self.length = size
         if not nosort:
-            (self.heigth, self.width, self.length) = sorted((int(self.heigth), int(self.width),
-                                                             int(self.length)), reverse=True)
+            (self.heigth, self.width, self.length) = sorted((float(self.heigth), float(self.width),
+                                                             float(self.length)), reverse=True)
         self.volume = self.heigth * self.width * self.length
         self.size = (self.heigth, self.width, self.length)
 
@@ -158,9 +158,9 @@ class Package(object):
 
     def __repr__(self):
         if self.weight:
-            return "<Package %dx%dx%d %d>" % (self.heigth, self.width, self.length, self.weight)
+            return "<Package %.2fx%.2fx%.2f %.2f>" % (self.heigth, self.width, self.length, self.weight)
         else:
-            return "<Package %dx%dx%d>" % (self.heigth, self.width, self.length)
+            return "<Package %.2fx%.2fx%.2f>" % (self.heigth, self.width, self.length)
 
 
 def buendelung(kartons, maxweight=31000, maxgurtmass=3000):
@@ -168,9 +168,11 @@ def buendelung(kartons, maxweight=31000, maxgurtmass=3000):
 
     Gibt die gebündelten Pakete und die nicht bündelbaren Pakete zurück.
 
-    >>> buendelung([Package((800, 310, 250)), Package((800, 310, 250)), Package((800, 310, 250)), Package((800, 310, 250))])
+    >>> buendelung([Package((800, 310, 250)), Package((800, 310, 250)), Package((800, 310, 250)),
+    Package((800, 310, 250))])
     (1, [<Package 800x750x310>], [<Package 800x310x250>])
-    >>> buendelung([Package((800, 310, 250)), Package((800, 310, 250)), Package((800, 310, 250)), Package((800, 310, 250)), Package((450, 290, 250)), Package((450, 290, 250))])
+    >>> buendelung([Package((800, 310, 250)), Package((800, 310, 250)), Package((800, 310, 250)),
+     Package((800, 310, 250)), Package((450, 290, 250)), Package((450, 290, 250))])
     (2, [<Package 800x750x310>, <Package 500x450x290>], [<Package 800x310x250>])
     """
     kartons = list(kartons)
@@ -236,9 +238,11 @@ def pack_in_bins(kartons, versandkarton):
     You provide it with a bin size and a list of Package Objects to be bined. Returns a list of lists
     representing the bins with the binned Packages and a list of Packages too big for binning.
 
-    >>> pack_in_bins([Package('135x200x250'), Package('170x380x390'), Package('485x280x590'), Package('254x171x368'), Package('201x172x349'), Package('254x171x368')], \
+    >>> pack_in_bins([Package('135x200x250'), Package('170x380x390'), Package('485x280x590'), Package('254x171x368'),
+    Package('201x172x349'), Package('254x171x368')], \
                      Package('600x400x400'))
-    ([[<Package 250x200x135>, <Package 349x201x172>, <Package 368x254x171>], [<Package 368x254x171>, <Package 390x380x170>]], [<Package 590x485x280>])
+    ([[<Package 250x200x135>, <Package 349x201x172>, <Package 368x254x171>], [<Package 368x254x171>,
+     <Package 390x380x170>]], [<Package 590x485x280>])
     """
 
     import pyshipping.binpack
@@ -254,7 +258,7 @@ def pack_in_bins(kartons, versandkarton):
     return bins, toobig + rest
 
 
-### Tests
+# Tests
 class PackageTests(unittest.TestCase):
     """Simple tests for Package objects."""
 
@@ -311,7 +315,7 @@ if __name__ == '__main__':
         multi = single * factor
         if multi.weight > 31000 or multi.gurtmass > 3000:
             multi = single * (factor - 1)
-            #print factor - 1, multi, multi.gurtmass
+            # print factor - 1, multi, multi.gurtmass
             break
 
     doctest.testmod()

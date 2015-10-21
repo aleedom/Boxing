@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en" ng-app=boxing>
+<head>
+  <meta charset="utf-8">
+  <title>ng-Boxing</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/libs/bootstrap/dist/css/bootstrap.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/app.css') }}">
+
+</head>
+<body>
+
+    <div class="container" ng-controller="boxCtrl">
+        <div class="row">
+            <div class="well col-md-4 col-sm-offset-4">
+                <div class="row">
+                    <h3 class="text-center">New Item</h3>
+                    <br/>
+                    <form class="form form-horizontal" autocomplete="off" name="frm" ng-submit="addItem()">
+
+                        <div class="form-group">
+                            <label class="form-label col-xs-2 col-xs-offset-3">Length:</label>
+                            <div class="col-md-4">
+                                <input class="form-control" type="number" placeholder="0" name="length" ng-model="length" required/>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label col-xs-2 col-xs-offset-3">Width:</label>
+                            <div class="col-md-4">
+                                <input class="form-control" type="number" placeholder="0" name="width" ng-model="width" required/>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label col-xs-2 col-xs-offset-3">Height:</label>
+                            <div class="col-md-4">
+                                <input class="form-control" type="number" placeholder="0" name="height" ng-model="height" required/>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label col-xs-2 col-xs-offset-3">Amount:</label>
+                            <div class="col-md-4">
+                                <input class="form-control" type="number" placeholder="0" name="amount" ng-model="amount" required/>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <button class="btn btn-primary" ng-disabled="frm.$invalid">Add to Order</button>
+                        </div>
+                    </form>
+
+                </div>
+
+            </div>
+        </div>
+
+
+        </br>
+
+
+            <div class="well row">
+                <h3 class="text-center col-xs-2 col-xs-offset-5">Current Order {[order_volume]}</h3>
+
+
+                <div class="list-group">
+                    <div class="row">
+                        <div class="list-group-item col-sm-12" ng-repeat="item in items">
+                            <a class="glyphicon glyphicon-remove pull-right text-danger" ng-click="removeItem($index)"></a>
+                            <h5 class="col-sm-3">Length: {[item.length]}</h5>
+                            <h5 class="col-sm-3">Width: {[item.width]}</h5>
+                            <h5 class="col-sm-3">Height: {[item.height]}</h5>
+                            <h5 class="col-sm-2">Amount: {[item.amount]}</h5>
+                        </div>
+                    </div>
+                </div>
+                <div ng-controller="modalController">
+                    <button class="btn btn-success pull-right" ng-click="open()" ng-show="items.length">Box Order</button>
+                    <button class="btn btn-danger pull-right" ng-click="clearAll()" ng-show="items.length">Clear All</button>
+                </div>
+
+            </div>
+    </div>
+  <script type="text/javascript"src="{{ url_for('static', filename='assets/libs/angular/angular.js') }}"></script>
+  <script type="text/javascript"src="{{ url_for('static', filename='assets/libs/angular-bootstrap/ui-bootstrap-tpls.js') }}"></script>
+  <script type="text/javascript"src="{{ url_for('static', filename='app/app.module.js') }}"></script>
+</body>
+</html>

@@ -41,6 +41,7 @@ import time
 import random
 from package import Package
 
+
 def packstrip(bin, p):
     """Creates a Strip which fits into bin.
 
@@ -222,16 +223,14 @@ def test():
             continue
         bins, rest = binpack(packages)
         if rest:
-            print "invalid data", rest, line
+            print("invalid data", rest, line)
         else:
             vorher += len(packages)
             nachher += len(bins)
-    print time.time() - start,
-    print vorher, nachher, float(nachher) / vorher * 100
+    print(time.time() - start)
+    print(vorher, nachher, float(nachher) / vorher * 100)
 
 
 if __name__ == '__main__':
     import cProfile
     cProfile.run('test()')
-
-
