@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" ng-app=Todo>
+<html lang="en" ng-app=boxing>
 <head>
   <meta charset="utf-8">
   <title>ng-Boxing</title>
@@ -44,7 +44,7 @@
                                 <input class="form-control" type="number" placeholder="0" name="amount" ng-model="amount" required/>
                             </div>
                         </div>
-                        <div class="col-md-9 col-xs-offset-3">
+                        <div class="text-center">
                             <button class="btn btn-primary" ng-disabled="frm.$invalid">Add to Order</button>
                         </div>
                     </form>
@@ -64,20 +64,24 @@
 
                 <div class="list-group">
                     <div class="row">
-                        <div class="list-group-item col-sm-12" ng-repeat="todo in todos">
+                        <div class="list-group-item col-sm-12" ng-repeat="item in items">
                             <a class="glyphicon glyphicon-remove pull-right text-danger" ng-click="removeItem($index)"></a>
-                            <h5 class="col-sm-3">Length: {[todo.length]}</h5>
-                            <h5 class="col-sm-3">Width: {[todo.width]}</h5>
-                            <h5 class="col-sm-3">Height: {[todo.height]}</h5>
-                            <h5 class="col-sm-2">Amount: {[todo.amount]}</h5>
+                            <h5 class="col-sm-3">Length: {[item.length]}</h5>
+                            <h5 class="col-sm-3">Width: {[item.width]}</h5>
+                            <h5 class="col-sm-3">Height: {[item.height]}</h5>
+                            <h5 class="col-sm-2">Amount: {[item.amount]}</h5>
                         </div>
                     </div>
                 </div>
-                <button class="btn btn-success pull-right" ng-click="boxOrder()" ng-show="todos.length">Box Order</button>
-                <button class="btn btn-danger pull-right" ng-click="clearAll()" ng-show="todos.length">Clear All</button>
+                <div ng-controller="modalController">
+                    <button class="btn btn-success pull-right" ng-click="open()" ng-show="items.length">Box Order</button>
+                    <button class="btn btn-danger pull-right" ng-click="clearAll()" ng-show="items.length">Clear All</button>
+                </div>
+
             </div>
     </div>
-  <script type="text/javascript"src="{{ url_for('static', filename='assets/libs/angular/angular.min.js') }}"></script>
+  <script type="text/javascript"src="{{ url_for('static', filename='assets/libs/angular/angular.js') }}"></script>
+  <script type="text/javascript"src="{{ url_for('static', filename='assets/libs/angular-bootstrap/ui-bootstrap-tpls.js') }}"></script>
   <script type="text/javascript"src="{{ url_for('static', filename='app/app.module.js') }}"></script>
 </body>
 </html>
