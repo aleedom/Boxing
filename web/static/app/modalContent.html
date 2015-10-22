@@ -3,9 +3,50 @@
         <h3 class="modal-title">Result:</h3>
     </div>
     <div class="modal-body">
-		<b>{[ order_volume ]}</b>
+
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <td>
+                        <a href="#" ng-click="sortType = 'name'; sortReverse = !sortReverse">
+                            Box Name
+                            <span ng-show="sortType == 'name' && !sortReverse" class="fa fa-caret-down"></span>
+                            <span ng-show="sortType == 'name' && sortReverse" class="fa fa-caret-up"></span>
+                        </a>
+                    </td>
+                    <td>
+                        <a href="#" ng-click="sortType = 'amount'; sortReverse = !sortReverse">
+                            Number Used
+                            <span ng-show="sortType == 'amount' && !sortReverse" class="fa fa-caret-down"></span>
+                            <span ng-show="sortType == 'amount' && sortReverse" class="fa fa-caret-up"></span>
+                        </a>
+                    </td>
+                    <td>
+                        <a href="#" ng-click="sortType = 'eff'; sortReverse = !sortReverse">
+                            Total Efficiency
+                            <span ng-show="sortType == 'eff' && !sortReverse" class="fa fa-caret-down"></span>
+                            <span ng-show="sortType == 'eff' && sortReverse" class="fa fa-caret-up"></span>
+                        </a>
+                    </td>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr ng-repeat="box in boxes | orderBy:sortType:sortReverse | limitTo:gettoShow()">
+                    <td>{[ box.name ]}</td>
+                    <td>{[ box.amount ]}</td>
+                    <td>{[ box.eff ]}%</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
     <div class="modal-footer">
+        <div class="form-group">
+            <label class="form-label col-xs-5">Amount to Show: {[toShow]} of {[boxes.length]}</label>
+            <div class="col-xs-2">
+                <input class="form-control" type="number" default="5" name="amount" ng-model="toShow" max="boxes.length" required/>
+            </div>
+        </div>
         <button class="btn btn-primary" type="button" ng-click="cancel()">Return to Order</button>
         <button class="btn btn-warning" type="button" ng-click="new_order()">New Order</button>
     </div>

@@ -22,20 +22,22 @@ from binpack import binpack
 """
 
 base_boxes = {
-    "box21":Package("9x7x5"),
-    "box24":Package("10x8x6"),
-    "box28":Package("12x10x6"),
-    "box30":Package("12x10x8"),
-    "box32":Package("12x10x10"),
-    "box36":Package("16x12x8"),
-    "box40":Package("16x14x10"),
-    "box42":Package("18x14x10"),
-    "box48":Package("18x16x14"),
-    "box52":Package("20x16x16"),
-    "box58":Package("24x18x16"),
-    "box66":Package("28x20x18")
+    "box21": Package("9x7x5"),
+    "box24": Package("10x8x6"),
+    "box28": Package("12x10x6"),
+    "box30": Package("12x10x8"),
+    "box32": Package("12x10x10"),
+    "box36": Package("16x12x8"),
+    "box40": Package("16x14x10"),
+    "box42": Package("18x14x10"),
+    "box48": Package("18x16x14"),
+    "box52": Package("20x16x16"),
+    "box58": Package("24x18x16"),
+    "box66": Package("28x20x18")
 }
-def eff(Merch,boxes):
+
+
+def eff(Merch, boxes):
     """
     Effency of a box is a percentage.
     eff = used_volume/total_volume
@@ -48,6 +50,7 @@ def eff(Merch,boxes):
         used_volume += m.volume
     return used_volume/total_volume
 
+
 def fit_to_boxes(Merch):
     """
     Find the The number of each box it would take to fill an order
@@ -55,19 +58,16 @@ def fit_to_boxes(Merch):
     first by amount of boxes used then by Effency
     """
     result = []
-    for box_name,box_value in base_boxes.items():
-        used,not_used = binpack(Merch,box_value,5000)
-        if len(not_used) > 0:#if one of the merch doesnt fit in this box dont use
+    for box_name, box_value in base_boxes.items():
+        used,  not_used = binpack(Merch, box_value, 5000)
+        if len(not_used) > 0:  # if one of the merch doesnt fit in this box dont use
             continue
         else:
             t = {
-                'name':box_name,
-                'amount':len(used),
-                'eff':eff(Merch,[box_value]*len(used))#list of all boxes used
+                'name': box_name,
+                'amount': len(used),
+                'eff': int(eff(Merch, [box_value]*len(used))*100)  # list of all boxes used
             }
             result.append(t)
     result.sort(key=lambda x: (x['amount'], -x['eff']))
     return result
-
-
-#TODO TESTS!!!!

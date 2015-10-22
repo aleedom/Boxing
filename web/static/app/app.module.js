@@ -35,7 +35,18 @@ angular.module('boxing',['ui.bootstrap'])
     }])
     .controller('modalController', function($scope, $uibModal, $log) {
 
+        $scope.sortType = 'eff';
+        $scope.sortReverse = true;
         $scope.animationsEnabled = true;
+        $scope.toShow = 5;
+
+        $scope.gettoShow = function(){
+            if($scope.toShow < 5){
+                return 5;
+            }else{
+                return $scope.toShow;
+            }
+        }
 
         $scope.open = function (size) {
             var modalInstance = $uibModal.open({
@@ -65,7 +76,7 @@ angular.module('boxing',['ui.bootstrap'])
 
         $http.post('/api/box_order',items)
             .success(function(response){
-                $scope.order_volume=response;
+                $scope.boxes=response;
             });
 
 
