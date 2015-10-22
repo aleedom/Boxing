@@ -11,36 +11,36 @@
 
     <div class="container" ng-controller="boxCtrl">
         <div class="row">
-            <div class="well col-md-4 col-sm-offset-4">
+            <div class="well col-md-4 col-md-offset-4">
                 <div class="row">
                     <h3 class="text-center">New Item</h3>
                     <br/>
                     <form class="form form-horizontal" autocomplete="off" name="frm" ng-submit="addItem()">
 
                         <div class="form-group">
-                            <label class="form-label col-xs-2 col-xs-offset-3">Length:</label>
-                            <div class="col-md-4">
+                            <label class="form-label col-xs-4 col-xs-offset-2 text-right text-left-sm text-left-xs ">Length (in):</label>
+                            <div class="col-md-3">
                                 <input class="form-control" type="number" placeholder="0" name="length" ng-model="length" required/>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label col-xs-2 col-xs-offset-3">Width:</label>
-                            <div class="col-md-4">
+                            <label class="form-label col-xs-4 col-xs-offset-2 text-right text-left-sm text-left-xs">Width (in):</label>
+                            <div class="col-md-3">
                                 <input class="form-control" type="number" placeholder="0" name="width" ng-model="width" required/>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label col-xs-2 col-xs-offset-3">Height:</label>
-                            <div class="col-md-4">
+                            <label class="form-label col-xs-4 col-xs-offset-2 text-right text-left-sm text-left-xs">Height (in):</label>
+                            <div class="col-md-3">
                                 <input class="form-control" type="number" placeholder="0" name="height" ng-model="height" required/>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label col-xs-2 col-xs-offset-3">Amount:</label>
-                            <div class="col-md-4">
+                            <label class="form-label col-xs-4 col-xs-offset-2 text-right text-left-sm text-left-xs">Amount:</label>
+                            <div class="col-md-3">
                                 <input class="form-control" type="number" placeholder="0" name="amount" ng-model="amount" required/>
                             </div>
                         </div>
@@ -64,12 +64,12 @@
 
                 <div class="list-group">
                     <div class="row">
-                        <div class="list-group-item col-sm-12" ng-repeat="item in items">
+                        <div class="list-group-item col-xs-12" ng-repeat="item in items">
                             <a class="glyphicon glyphicon-remove pull-right text-danger" ng-click="removeItem($index)"></a>
-                            <h5 class="col-sm-3">Length: {[item.length]}</h5>
-                            <h5 class="col-sm-3">Width: {[item.width]}</h5>
-                            <h5 class="col-sm-3">Height: {[item.height]}</h5>
-                            <h5 class="col-sm-2">Amount: {[item.amount]}</h5>
+                            <h5 class="col-sm-3 ">Length: {[item.length]}</h5>
+                            <h5 class="col-sm-3 ">Width: {[item.width]}</h5>
+                            <h5 class="col-sm-3 ">Height: {[item.height]}</h5>
+                            <h5 class="col-sm-2 ">Amount: {[item.amount]}</h5>
                         </div>
                     </div>
                 </div>
