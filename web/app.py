@@ -57,8 +57,7 @@ class GET_Boxes(Resource):
         a = []
         for item in items:
             a.append(item.serialize())
-        print(a)
-        return a
+        return len(a), a
 
 api.add_resource(Box_item, '/api/box_order')
 api.add_resource(GET_Boxes, '/api/boxes')
