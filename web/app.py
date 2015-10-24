@@ -3,6 +3,7 @@ from flask import request, render_template
 from flask.ext.sqlalchemy import SQLAlchemy
 from config import BaseConfig
 from flask_restful import Api, Resource
+import json
 
 from multibox import fit_to_boxes, Package
 
@@ -11,10 +12,14 @@ app = Flask(__name__, template_folder='./static')
 app.config.from_object(BaseConfig)
 api = Api(app)
 db = SQLAlchemy(app)
+db.track_modifications = True
+from models import Box
 
 
-def volume(item):
-    return item['length']*item['width']*item['height']*item['amount']
+class SetEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, set):
+            return list(obj)
 
 
 def to_Package(items):
@@ -33,7 +38,7 @@ def to_Package(items):
     return result
 
 
-class Box(Resource):
+class Box_item(Resource):
     def post(self):
         items = request.get_json(force=True)
         # items is a list of dictionaries need to convert to
@@ -45,7 +50,18 @@ class Box(Resource):
 
         return result
 
-api.add_resource(Box, '/api/box_order')
+
+class GET_Boxes(Resource):
+    def get(self):
+        items = Box.query.all()
+        a = []
+        for item in items:
+            a.append(item.serialize())
+        print(a)
+        return a
+
+api.add_resource(Box_item, '/api/box_order')
+api.add_resource(GET_Boxes, '/api/boxes')
 
 
 @app.route('/', methods=['GET', 'POST'])
