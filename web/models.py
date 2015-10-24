@@ -16,7 +16,6 @@ class MutableSet(Mutable, set):
         else:
             return value
 
-    @classmethod
     def to_JSON(self):
         return list[self]
 

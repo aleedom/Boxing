@@ -38,7 +38,7 @@ def to_Package(items):
     return result
 
 
-class Box_item(Resource):
+class box_item(Resource):
     def post(self):
         items = request.get_json(force=True)
         # items is a list of dictionaries need to convert to
@@ -51,16 +51,33 @@ class Box_item(Resource):
         return result
 
 
-class GET_Boxes(Resource):
+class get_all_boxes(Resource):
     def get(self):
         items = Box.query.all()
         a = []
         for item in items:
             a.append(item.serialize())
-        return len(a), a
+        return {'length': len(a), 'items': a}
 
-api.add_resource(Box_item, '/api/box_order')
-api.add_resource(GET_Boxes, '/api/boxes')
+
+class get_box(Resource):
+    def get(self):
+        boxes = Box.query.all()
+        user_tags = request.args.get('tags').split(',')
+
+        a = []
+        for i in user_tags:
+            a.append(i)
+        user_tags = set(a)
+        a = []
+        for box in boxes:
+            if box.tags.intersection(user_tags) == user_tags:
+                a.append(box.serialize())
+        return a
+
+api.add_resource(box_item, '/api/box_order')
+api.add_resource(get_all_boxes, '/api/boxes')
+api.add_resource(get_box, '/api/box/tags')
 
 
 @app.route('/', methods=['GET', 'POST'])
