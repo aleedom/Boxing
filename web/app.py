@@ -4,15 +4,13 @@ from flask.ext.sqlalchemy import SQLAlchemy
 from config import BaseConfig
 from flask_restful import Api, Resource
 import json
-
 from multibox import fit_to_boxes, Package
 
-
 app = Flask(__name__, template_folder='./static')
-app.config.from_object(BaseConfig)
 api = Api(app)
+app.config.from_object(BaseConfig)
+
 db = SQLAlchemy(app)
-db.track_modifications = True
 from models import Box
 
 
@@ -38,7 +36,7 @@ def to_Package(items):
     return result
 
 
-class box_item(Resource):
+class fit_boxes(Resource):
     def post(self):
         items = request.get_json(force=True)
         # items is a list of dictionaries need to convert to
@@ -60,24 +58,46 @@ class get_all_boxes(Resource):
         return {'length': len(a), 'items': a}
 
 
-class get_box(Resource):
+class get_box_by_tags(Resource):
     def get(self):
         boxes = Box.query.all()
-        user_tags = request.args.get('tags').split(',')
+        user_tags = set(request.args.get('tags').split(','))
+        return [box.serialize()
+                for box in boxes
+                if box.tags.intersection(user_tags) == user_tags]
 
-        a = []
-        for i in user_tags:
-            a.append(i)
-        user_tags = set(a)
-        a = []
-        for box in boxes:
-            if box.tags.intersection(user_tags) == user_tags:
-                a.append(box.serialize())
-        return a
 
-api.add_resource(box_item, '/api/box_order')
+class get_box_by_size(Resource):
+    def get(self):
+
+        sizes = map(int, request.args.get('size').split(','))
+        if len(sizes) == 1:
+            boxes = Box.query.filter((Box.length == sizes[0]) | (Box.width == sizes[0]) | (Box.height == sizes[0]))
+        elif len(sizes) == 2:
+            # very ugly dont know if i can do better
+            boxes = Box.query.filter(
+                ((Box.length == sizes[0]) & (Box.width == sizes[1])) |
+                ((Box.length == sizes[1]) & (Box.width == sizes[0])) |
+                ((Box.length == sizes[0]) & (Box.height == sizes[1])) |
+                ((Box.length == sizes[1]) & (Box.height == sizes[0])) |
+                ((Box.width == sizes[0]) & (Box.height == sizes[1])) |
+                ((Box.width == sizes[1]) & (Box.height == sizes[0])))
+        elif len(sizes) == 3:
+            boxes = Box.query.filter(
+                ((Box.length == sizes[0]) & (Box.width == sizes[1]) & (Box.height == sizes[2])) |
+                ((Box.length == sizes[0]) & (Box.width == sizes[2]) & (Box.height == sizes[1])) |
+                ((Box.length == sizes[1]) & (Box.width == sizes[2]) & (Box.height == sizes[0])) |
+                ((Box.length == sizes[1]) & (Box.width == sizes[0]) & (Box.height == sizes[2])) |
+                ((Box.length == sizes[2]) & (Box.width == sizes[1]) & (Box.height == sizes[0])) |
+                ((Box.length == sizes[2]) & (Box.width == sizes[0]) & (Box.height == sizes[1])))
+        else:
+            return "invalid input"
+        return [box.serialize() for box in boxes]
+
+api.add_resource(fit_boxes, '/api/fit_boxes')
 api.add_resource(get_all_boxes, '/api/boxes')
-api.add_resource(get_box, '/api/box/tags')
+api.add_resource(get_box_by_tags, '/api/boxes/tags')
+api.add_resource(get_box_by_size, '/api/boxes/size')
 
 
 @app.route('/', methods=['GET', 'POST'])
