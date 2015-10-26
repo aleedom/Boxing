@@ -21,28 +21,28 @@
                         <div class="form-group">
                             <label class="form-label col-xs-4 col-xs-offset-2 text-right text-left-sm text-left-xs ">Length (in):</label>
                             <div class="col-md-3">
-                                <input class="form-control" type="number" placeholder="0" name="length" ng-model="length" required/>
+                                <input class="form-control" type="number" step="any" placeholder="0" name="length" ng-model="length" required/>
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label class="form-label col-xs-4 col-xs-offset-2 text-right text-left-sm text-left-xs">Width (in):</label>
                             <div class="col-md-3">
-                                <input class="form-control" type="number" placeholder="0" name="width" ng-model="width" required/>
+                                <input class="form-control" type="number" step="any" placeholder="0" name="width" ng-model="width" required/>
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label class="form-label col-xs-4 col-xs-offset-2 text-right text-left-sm text-left-xs">Height (in):</label>
                             <div class="col-md-3">
-                                <input class="form-control" type="number" placeholder="0" name="height" ng-model="height" required/>
+                                <input class="form-control" type="number" step="any" placeholder="0" name="height" ng-model="height" required/>
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label class="form-label col-xs-4 col-xs-offset-2 text-right text-left-sm text-left-xs">Amount:</label>
                             <div class="col-md-3">
-                                <input class="form-control" type="number" placeholder="0" name="amount" ng-model="amount" required/>
+                                <input class="form-control" type="number" step="any" placeholder="0" name="amount" ng-model="amount" required/>
                             </div>
                         </div>
                         <div class="text-center">
@@ -72,10 +72,16 @@
                         </div>
                     </div>
                 </div>
-                <div ng-controller="modalController">
-                    <button class="btn btn-success pull-right" ng-click="open()" ng-show="items.length">Box Order</button>
-                    <button class="btn btn-danger pull-right" ng-click="clearAll()" ng-show="items.length">Clear All</button>
+                <div class="pull-left" ng-controller="BoxController" ng-show="items.length">
+                    <label>Boxes to use</label>
+                    <button class="btn btn-primary" ng-model="checkModel.owned" uib-btn-checkbox>Owned</button>
+                    <button class="btn btn-primary" ng-model="checkModel.not_owned" uib-btn-checkbox>Not Owned</button>
                 </div>
+                <div ng-controller="modalController">
+                    <button class="btn btn-primary pull-right" ng-click="open()" ng-show="items.length" ng-disabled="checkModel.owned">Box Order</button>
+                    <button class="btn btn-warning pull-right" ng-click="clearAll()" ng-show="items.length" >Clear All</button>
+                </div>
+
 
             </div>
     </div>
