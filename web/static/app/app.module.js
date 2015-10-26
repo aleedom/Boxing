@@ -3,6 +3,9 @@ angular.module('boxing',['ui.bootstrap'])
         $interpolateProvider.startSymbol('{['); //required to work with jinja2
         $interpolateProvider.endSymbol(']}');
     }])
+    .constant('buttonConfig', {
+        activeClass: 'button_active'
+    })
     .controller('boxCtrl', ['$scope', '$http', function($scope, $http){
         $scope.items = [];
 
@@ -74,7 +77,7 @@ angular.module('boxing',['ui.bootstrap'])
     })
     .controller('ModalInstanceController', function ($scope, $http, $modalInstance, items) {
 
-        $http.post('/api/box_order',items)
+        $http.post('/api/fit_boxes',items)
             .success(function(response){
                 $scope.boxes=response;
             });
@@ -87,4 +90,20 @@ angular.module('boxing',['ui.bootstrap'])
         $scope.cancel = function () {
             $modalInstance.dismiss('cancel');
         };
+    })
+    .controller('BoxController', function($scope, $http) {
+        $scope.checkModel = {
+            owned: true,
+            not_owned: true,
+        };
+        $scope.checkResults = [];
+
+        $scope.$watchCollection('checkModel', function(){
+            $scope.checkResults = [];
+            angular.forEach($scope.checkModel, function (value, key) {
+                if (value) {
+                    $scope.checkResults.push(key);
+                }
+            });
+        });
     });
