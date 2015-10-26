@@ -3,18 +3,21 @@ from flask import request, render_template
 from flask.ext.sqlalchemy import SQLAlchemy
 from config import BaseConfig
 from flask_restful import Api, Resource
-
+import json
 from multibox import fit_to_boxes, Package
 
-
 app = Flask(__name__, template_folder='./static')
-app.config.from_object(BaseConfig)
 api = Api(app)
+app.config.from_object(BaseConfig)
+
 db = SQLAlchemy(app)
+from models import Box
 
 
-def volume(item):
-    return item['length']*item['width']*item['height']*item['amount']
+class SetEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, set):
+            return list(obj)
 
 
 def to_Package(items):
@@ -33,19 +36,93 @@ def to_Package(items):
     return result
 
 
-class Box(Resource):
+class fit_boxes(Resource):
     def post(self):
+        # items is a list of 2 things, [0] is the list of things to be boxed [1] is the boxes to be used
         items = request.get_json(force=True)
-        # items is a list of dictionaries need to convert to
+
         # a list of Pacakge() objects
-        package_items = to_Package(items)
+        package_items = to_Package(items[0])
+        db_boxes = Box.query.all()
+        boxes = {}
+        owned = items[1]['owned']
+        not_owned = items[1]['not_owned']
+        # one or both conditions must be true which makes this decision tree easier
+        if owned and not_owned:
+            # use all boxes
+            for box in db_boxes:
+                boxes[box.name] = Package((box.length, box.width, box.height))
+
+        elif owned:
+            # if owned is true then not_owned is false
+            # therefor only use owned boxes
+            for box in db_boxes:
+                if box.tags.intersection({'owned'}) == {'owned'}:
+                    boxes[box.name] = Package((box.length, box.width, box.height))
+
+        else:
+            # not_owned must be true and owned must be false
+            # therefor only use not owned boxes
+            for box in db_boxes:
+                if box.tags.intersection({'owned'}) != {'owned'}:
+                    boxes[box.name] = Package((box.length, box.width, box.height))
 
         # do the calculation
-        result = fit_to_boxes(package_items)
+        # input is a list of packages to be boxed, and a dictionary {name: package_object} of possible boxes to be used
+        result = fit_to_boxes(package_items, boxes)
 
         return result
 
-api.add_resource(Box, '/api/box_order')
+
+class get_all_boxes(Resource):
+    def get(self):
+        items = Box.query.all()
+        a = []
+        for item in items:
+            a.append(item.serialize())
+        return {'length': len(a), 'items': a}
+
+
+class get_box_by_tags(Resource):
+    def get(self):
+        boxes = Box.query.all()
+        user_tags = set(request.args.get('tags').split(','))
+        return [box.serialize()
+                for box in boxes
+                if box.tags.intersection(user_tags) == user_tags]
+
+
+class get_box_by_size(Resource):
+    def get(self):
+
+        sizes = map(int, request.args.get('size').split(','))
+        if len(sizes) == 1:
+            boxes = Box.query.filter((Box.length == sizes[0]) | (Box.width == sizes[0]) | (Box.height == sizes[0]))
+        elif len(sizes) == 2:
+            # very ugly dont know if i can do better
+            boxes = Box.query.filter(
+                ((Box.length == sizes[0]) & (Box.width == sizes[1])) |
+                ((Box.length == sizes[1]) & (Box.width == sizes[0])) |
+                ((Box.length == sizes[0]) & (Box.height == sizes[1])) |
+                ((Box.length == sizes[1]) & (Box.height == sizes[0])) |
+                ((Box.width == sizes[0]) & (Box.height == sizes[1])) |
+                ((Box.width == sizes[1]) & (Box.height == sizes[0])))
+        elif len(sizes) == 3:
+            boxes = Box.query.filter(
+                ((Box.length == sizes[0]) & (Box.width == sizes[1]) & (Box.height == sizes[2])) |
+                ((Box.length == sizes[0]) & (Box.width == sizes[2]) & (Box.height == sizes[1])) |
+                ((Box.length == sizes[1]) & (Box.width == sizes[2]) & (Box.height == sizes[0])) |
+                ((Box.length == sizes[1]) & (Box.width == sizes[0]) & (Box.height == sizes[2])) |
+                ((Box.length == sizes[2]) & (Box.width == sizes[1]) & (Box.height == sizes[0])) |
+                ((Box.length == sizes[2]) & (Box.width == sizes[0]) & (Box.height == sizes[1])))
+        else:
+            return "invalid input"
+        return [box.serialize() for box in boxes]
+
+api.add_resource(fit_boxes, '/api/fit_boxes')
+api.add_resource(get_all_boxes, '/api/boxes')
+api.add_resource(get_box_by_tags, '/api/boxes/tags')
+api.add_resource(get_box_by_size, '/api/boxes/size')
 
 
 @app.route('/', methods=['GET', 'POST'])

@@ -1,3 +1,11 @@
+.button_active {
+
+}
+
+.btn:focus {
+    outline: none;
+}
+
 .done {
     text-decoration: line-through;
     color: #ccc;

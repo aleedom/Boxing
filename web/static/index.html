@@ -6,7 +6,6 @@
   <title>ng-Boxing</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='assets/libs/bootstrap/dist/css/bootstrap.min.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/app.css') }}">
-
 </head>
 <body>
 
@@ -72,10 +71,20 @@
                         </div>
                     </div>
                 </div>
-                <div ng-controller="modalController">
-                    <button class="btn btn-success pull-right" ng-click="open()" ng-show="items.length">Box Order</button>
-                    <button class="btn btn-danger pull-right" ng-click="clearAll()" ng-show="items.length">Clear All</button>
+                <div ng-controller="modalController" ng-show="items.length">
+
+                    <div class="pull-left">
+                        <label class="">Use Boxes: </label>
+                        <button class="btn" ng-class="{'btn-primary': owned, 'btn-default': !owned}" ng-click="update_owned()">Owned</button>
+                        <button class="btn" ng-class="{'btn-primary': not_owned, 'btn-default': !not_owned}" ng-click="update_not_owned()">Not Owned</button>
+                    </div>
+                    <div>
+                        <button class="btn btn-primary pull-right" ng-click="open()"ng-disabled="!owned && !not_owned">Box Order</button>
+                        <button class="btn btn-warning pull-right" ng-click="clearAll()" ng-show="items.length" >Clear All</button>
+                    </div>
                 </div>
+
+
 
             </div>
     </div>

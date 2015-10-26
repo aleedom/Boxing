@@ -3,6 +3,9 @@ angular.module('boxing',['ui.bootstrap'])
         $interpolateProvider.startSymbol('{['); //required to work with jinja2
         $interpolateProvider.endSymbol(']}');
     }])
+    .constant('buttonConfig', {
+        activeClass: 'button_active'
+    })
     .controller('boxCtrl', ['$scope', '$http', function($scope, $http){
         $scope.items = [];
 
@@ -37,8 +40,10 @@ angular.module('boxing',['ui.bootstrap'])
 
         $scope.sortType = 'eff';
         $scope.sortReverse = true;
-        $scope.animationsEnabled = true;
         $scope.toShow = 5;
+        $scope.owned = true;
+        $scope.not_owned = false;
+
 
         $scope.gettoShow = function(){
             if($scope.toShow < 5){
@@ -57,7 +62,14 @@ angular.module('boxing',['ui.bootstrap'])
                 resolve: {
                     items: function () {
                         return $scope.items;
+                    },
+                    boxes: function () {
+                        return {
+                            owned: $scope.owned,
+                            not_owned: $scope.not_owned
+                        }
                     }
+
                 }
             });
 
@@ -68,15 +80,22 @@ angular.module('boxing',['ui.bootstrap'])
             });
         };
 
-        $scope.toggleAnimation = function () {
-            $scope.animationsEnabled = !$scope.animationsEnabled;
+        $scope.update_owned = function() {
+            $scope.owned = !$scope.owned;
         };
-    })
-    .controller('ModalInstanceController', function ($scope, $http, $modalInstance, items) {
+        $scope.update_not_owned = function() {
+            $scope.not_owned = !$scope.not_owned;
+        };
 
-        $http.post('/api/box_order',items)
+    })
+    .controller('ModalInstanceController', function ($scope, $http, $modalInstance, items, boxes) {
+
+        console.log(boxes);
+
+        $http.post('/api/fit_boxes',[items, boxes])
             .success(function(response){
                 $scope.boxes=response;
+                console.log(response);
             });
 
 
@@ -87,4 +106,6 @@ angular.module('boxing',['ui.bootstrap'])
         $scope.cancel = function () {
             $modalInstance.dismiss('cancel');
         };
+
+
     });
