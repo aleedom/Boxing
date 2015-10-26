@@ -51,22 +51,22 @@ def eff(Merch, boxes):
     return used_volume/total_volume
 
 
-def fit_to_boxes(Merch):
+def fit_to_boxes(merch, boxes):
     """
     Find the The number of each box it would take to fill an order
     returned result is a list of dictionaries sorted
     first by amount of boxes used then by Effency
     """
     result = []
-    for box_name, box_value in base_boxes.items():
-        used,  not_used = binpack(Merch, box_value, 5000)
+    for box_name, box_value in boxes.items():
+        used,  not_used = binpack(merch, box_value, 5000)
         if len(not_used) > 0:  # if one of the merch doesnt fit in this box dont use
             continue
         else:
             t = {
                 'name': box_name,
                 'amount': len(used),
-                'eff': int(eff(Merch, [box_value]*len(used))*100)  # list of all boxes used
+                'eff': int(eff(merch, [box_value]*len(used))*100)  # list of all boxes used
             }
             result.append(t)
     result.sort(key=lambda x: (x['amount'], -x['eff']))

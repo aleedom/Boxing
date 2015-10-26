@@ -1,5 +1,9 @@
 .button_active {
-    
+
+}
+
+.btn:focus {
+    outline: none;
 }
 
 .done {
