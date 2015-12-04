@@ -41,9 +41,6 @@ def test(func):
 
 
 if __name__ == '__main__':
-    print("py",_)
+    print("py")
 
     test(binpack)
-
-
-import time

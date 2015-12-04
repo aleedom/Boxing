@@ -2,7 +2,7 @@ from app import db, Box
 from sqlalchemy.exc import IntegrityError
 
 stock_cartons = {
-    'tag':        'stock',
+    'tag':    'stock',
     '14':     '6x4x4',
     '15':     '7x5x3',
     '16':     '6x6x4',
