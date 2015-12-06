@@ -11,7 +11,7 @@ api = Api(app)
 app.config.from_object(BaseConfig)
 
 db = SQLAlchemy(app)
-from models import Box, Customer
+from models import Box, Customer, Merchandise, Order
 
 
 class SetEncoder(json.JSONEncoder):
@@ -74,18 +74,38 @@ class fit_boxes(Resource):
         return result
 
 
+class get_orders(Resource):
+    def get(self):
+        orders = Order.query.limit(1000).all()
+        a = []
+        for item in orders:
+            a.append(item.serialize())
+        return {'length': len(a), 'items': a}
+
+
+class get_merchandise(Resource):
+    def get(self):
+        merch = Merchandise.query.all()
+        a = []
+        for item in merch:
+            a.append(item.serialize())
+        return {'length': len(a), 'items': a}
+
+
 class get_customers(Resource):
     def get(self):
-        customers = Customer.query.all()
-        names = [cust.customer_firstname for cust in customers]
-        return names
+        customers = Customer.query.limit(100).all()
+        a = []
+        for item in customers:
+            a.append(item.serialize())
+        return {'length': len(a), 'items': a}
 
 
 class get_all_boxes(Resource):
     def get(self):
-        items = Box.query.all()
+        boxes = Box.query.all()
         a = []
-        for item in items:
+        for item in boxes:
             a.append(item.serialize())
         return {'length': len(a), 'items': a}
 
@@ -128,11 +148,20 @@ class get_box_by_size(Resource):
             return "invalid input"
         return [box.serialize() for box in boxes]
 
+# box resources
 api.add_resource(fit_boxes, '/api/fit_boxes')
 api.add_resource(get_all_boxes, '/api/boxes')
 api.add_resource(get_box_by_tags, '/api/boxes/tags')
 api.add_resource(get_box_by_size, '/api/boxes/size')
+
+# customer resources
 api.add_resource(get_customers, '/api/customers')
+
+# merchandise resources
+api.add_resource(get_merchandise, '/api/merchandise')
+
+# order resources
+api.add_resource(get_orders, '/api/orders')
 
 
 @app.route('/', methods=['GET', 'POST'])

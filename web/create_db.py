@@ -1,7 +1,10 @@
 from app import db
-from models import Box, Customer
+from models import Box, Customer, Merchandise, Order
 from sqlalchemy.exc import IntegrityError
 import csv
+import random
+from datetime import datetime, timedelta
+
 stock_cartons = {
     'tag':    'stock',
     '14':     '6x4x4',
@@ -274,15 +277,78 @@ def add_customers():
         db.session.commit()
     except IntegrityError:
         return 1
-        print("Duplicate boxes found!")
+        print("Duplicate Customer found!")
     return 0
 
 
 def add_merchandise():
+    with open('Merchandise.csv', 'r') as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            x = random.randint(1, 15)
+            y = random.randint(1, 15)
+            z = random.randint(1, 15)
 
+            db.session.add(
+                Merchandise(row['merchandise_id'],
+                            row['merchandise_name'],
+                            row['merchandise_price'],
+                            x,
+                            y,
+                            z))
+        try:
+            db.session.commit()
+        except IntegrityError:
+            return 1
+            print("Duplicate Merchandise found!")
     return 0
+
+
+def gen_random_date(start, end):
+    delta = end - start
+    int_delta = (delta.days * 24 * 60 * 60) + delta.seconds
+    random_second = random.randrange(int_delta)
+    return start + timedelta(seconds=random_second)
+
+
+def create_orders():
+    start_date = datetime.strptime('9/1/2015 12:01 AM', '%m/%d/%Y %I:%M %p')
+    end_date = datetime.strptime('11/30/2015 11:59 PM', '%m/%d/%Y %I:%M %p')
+    merch = Merchandise.query.all()
+    cust = Customer.query.all()
+    cust_ids = [c.customer_id for c in cust]
+
+    for i in range(20000):
+        r_date = gen_random_date(start_date, end_date)
+        num_merch = random.randint(1, 5)
+        customer_id = random.choice(cust_ids)
+        merch_list = []
+        for i in range(num_merch):
+            merch_list.append(random.choice(merch))
+        print(customer_id)
+        db.session.add(
+            Order(
+                order_customerid=customer_id,
+                order_merchandise=merch_list,
+                order_date=r_date))
+    db.session.commit()
+    return 0
+
+
+def test_order():
+    # customer = Customer.query.get("4ad25291-d490-4675-94eb-428bd97e4802")
+    m = Merchandise.query.get("9648a334-aa47-401b-a753-8926e9ecaa7e")
+    db.session.add(
+        Order(
+            order_customerid="4ad25291-d490-4675-94eb-428bd97e4802",
+            order_merchandise=[m],
+            order_date=datetime.now()))
+    db.session.commit()
+
 
 db.create_all()  # creates the schemas
 add_all_boxes()  # adds box data to db
 add_tag(owned_boxes, 'owned')
 add_customers()
+add_merchandise()
+create_orders()
