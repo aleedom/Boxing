@@ -84,7 +84,7 @@ class Customer(db.Model):
             'first_name':     self.customer_firstname,
             'last_name':    self.customer_lastname,
             'email':   self.customer_email,
-            'orders':   [o.serialize() for o in self.customer_orders]
+            'orders':   [o.order_id for o in self.customer_orders]
         }
 
 
@@ -135,7 +135,7 @@ class Order(db.Model):
         return {
             'id':           self.order_id,
             'customer_id':  self.order_customerid,
-            'boxes':        [b.serialize() for b in self.order_boxes],
-            'merchandise':  [m.serialize() for m in self.order_merchandise],
+            'boxes':        [b.box_name for b in self.order_boxes],
+            'merchandise':  [m.merchandise_name for m in self.order_merchandise],
             'date':         self.order_date.isoformat(),
         }

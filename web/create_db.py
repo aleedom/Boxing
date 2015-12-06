@@ -311,21 +311,30 @@ def gen_random_date(start, end):
     return start + timedelta(seconds=random_second)
 
 
-def create_orders():
+def create_orders_file():
     start_date = datetime.strptime('9/1/2015 12:01 AM', '%m/%d/%Y %I:%M %p')
     end_date = datetime.strptime('11/30/2015 11:59 PM', '%m/%d/%Y %I:%M %p')
     merch = Merchandise.query.all()
     cust = Customer.query.all()
     cust_ids = [c.customer_id for c in cust]
+    with open('Orders.csv', 'wo') as f:
+        writer = csv.writer(f, delimiter=',', quoting=csv.QUOTE_MINIMAL)
 
-    for i in range(20000):
-        r_date = gen_random_date(start_date, end_date)
-        num_merch = random.randint(1, 5)
-        customer_id = random.choice(cust_ids)
-        merch_list = []
-        for i in range(num_merch):
-            merch_list.append(random.choice(merch))
-        print(customer_id)
+        for i in range(20000):
+            r_date = gen_random_date(start_date, end_date)
+            num_merch = random.randint(1, 5)
+            customer_id = random.choice(cust_ids)
+            merch_list = []
+            for i in range(num_merch):
+                merch_list.append(random.choice(merch).merchandise_id)
+            print(customer_id)
+            writer.writerow([customer_id, merch_list, r_date])
+        return 0
+
+
+def create_orders():
+    with open('Orders.csv', 'r') as f:
+        reader = csv.DictReader(f)
         db.session.add(
             Order(
                 order_customerid=customer_id,
@@ -351,4 +360,4 @@ add_all_boxes()  # adds box data to db
 add_tag(owned_boxes, 'owned')
 add_customers()
 add_merchandise()
-create_orders()
+create_orders_file()

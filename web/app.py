@@ -74,7 +74,15 @@ class fit_boxes(Resource):
         return result
 
 
-class get_orders(Resource):
+class get_order_bydate(Resource):
+    def get(self):
+        start_date = request.args.get('start_date')
+        end_date = request.args.get('end_date')
+
+        return start_date, end_date
+
+
+class get_all_orders(Resource):
     def get(self):
         orders = Order.query.limit(1000).all()
         a = []
@@ -83,7 +91,7 @@ class get_orders(Resource):
         return {'length': len(a), 'items': a}
 
 
-class get_merchandise(Resource):
+class get_all_merchandise(Resource):
     def get(self):
         merch = Merchandise.query.all()
         a = []
@@ -92,7 +100,7 @@ class get_merchandise(Resource):
         return {'length': len(a), 'items': a}
 
 
-class get_customers(Resource):
+class get_all_customers(Resource):
     def get(self):
         customers = Customer.query.limit(100).all()
         a = []
@@ -155,13 +163,14 @@ api.add_resource(get_box_by_tags, '/api/boxes/tags')
 api.add_resource(get_box_by_size, '/api/boxes/size')
 
 # customer resources
-api.add_resource(get_customers, '/api/customers')
+api.add_resource(get_all_customers, '/api/customers')
 
 # merchandise resources
-api.add_resource(get_merchandise, '/api/merchandise')
+api.add_resource(get_all_merchandise, '/api/merchandise')
 
 # order resources
-api.add_resource(get_orders, '/api/orders')
+api.add_resource(get_all_orders, '/api/orders')
+api.add_resource(get_order_bydate, '/api/orders/date')
 
 
 @app.route('/', methods=['GET', 'POST'])
