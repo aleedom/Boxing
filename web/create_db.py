@@ -1,6 +1,7 @@
-from app import db, Box
+from app import db
+from models import Box, Customer
 from sqlalchemy.exc import IntegrityError
-
+import csv
 stock_cartons = {
     'tag':    'stock',
     '14':     '6x4x4',
@@ -260,6 +261,28 @@ def add_tag(names, tag):
         db.session.commit()
 
 
+def add_customers():
+    with open('Customer.csv', 'r') as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            db.session.add(
+                Customer(row["customer_id"],
+                         row['customer_firstname'],
+                         row['customer_lastname'],
+                         row['customer_email']))
+    try:
+        db.session.commit()
+    except IntegrityError:
+        return 1
+        print("Duplicate boxes found!")
+    return 0
+
+
+def add_merchandise():
+
+    return 0
+
 db.create_all()  # creates the schemas
 add_all_boxes()  # adds box data to db
 add_tag(owned_boxes, 'owned')
+add_customers()

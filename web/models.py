@@ -66,15 +66,21 @@ class Box(db.Model):
 
 
 class Customer(db.Model):
-    customer_id = db.Column(db.Integer, primary_key=True)
+    customer_id = db.Column(db.String, primary_key=True)
     customer_firstname = db.Column(db.String, nullable=False, unique=False)
     customer_lastname = db.Column(db.String, nullable=False, unique=False)
     customer_email = db.Column(db.String, nullable=False, unique=True)
     customer_orders = db.relationship('Order', backref='Customer', lazy='dynamic')
 
+    def __init__(self, id, firstname, lastname, email):
+        self.customer_id = id
+        self.customer_firstname = firstname
+        self.customer_lastname = lastname
+        self.customer_email = email
+
 
 class Merchandise(db.Model):
-    merchandise_id = db.Column(db.Integer, primary_key=True)
+    merchandise_id = db.Column(db.String, primary_key=True)
     merchandise_name = db.Column(db.String, nullable=False)
     merchandise_price = db.Column(db.Integer)
     merchandise_length = db.Column(db.Integer, nullable=True)
@@ -84,17 +90,17 @@ class Merchandise(db.Model):
 
 boxes = db.Table('boxes',
                  db.Column('box_id', db.Integer, db.ForeignKey('box.box_id')),
-                 db.Column('order_id', db.Integer, db.ForeignKey('order.order_id'))
+                 db.Column('order_id', db.String, db.ForeignKey('order.order_id'))
                  )
 merch = db.Table('merch',
-                 db.Column('merchandise_id', db.Integer, db.ForeignKey('merchandise.merchandise_id')),
-                 db.Column('order_id', db.Integer, db.ForeignKey('order.order_id'))
+                 db.Column('merchandise_id', db.String, db.ForeignKey('merchandise.merchandise_id')),
+                 db.Column('order_id', db.String, db.ForeignKey('order.order_id'))
                  )
 
 
 class Order(db.Model):
-    order_id = db.Column(db.Integer, primary_key=True)
-    order_customerid = db.Column(db.Integer, db.ForeignKey('customer.customer_id'))
-    boxes = db.relationship('Box', secondary=boxes, backref=db.backref('boxes', lazy='dynamic'), nullable=True)
+    order_id = db.Column(db.String, primary_key=True)
+    order_customerid = db.Column(db.String, db.ForeignKey('customer.customer_id'))
+    boxes = db.relationship('Box', secondary=boxes, backref=db.backref('boxes', lazy='dynamic'))
     merch = db.relationship('Merchandise', secondary=merch, backref=db.backref('merch', lazy='dynamic'))
     order_date = db.Column(db.DateTime)

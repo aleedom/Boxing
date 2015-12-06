@@ -11,7 +11,7 @@ api = Api(app)
 app.config.from_object(BaseConfig)
 
 db = SQLAlchemy(app)
-from models import Box
+from models import Box, Customer
 
 
 class SetEncoder(json.JSONEncoder):
@@ -74,6 +74,13 @@ class fit_boxes(Resource):
         return result
 
 
+class get_customers(Resource):
+    def get(self):
+        customers = Customer.query.all()
+        names = [cust.customer_firstname for cust in customers]
+        return names
+
+
 class get_all_boxes(Resource):
     def get(self):
         items = Box.query.all()
@@ -125,6 +132,7 @@ api.add_resource(fit_boxes, '/api/fit_boxes')
 api.add_resource(get_all_boxes, '/api/boxes')
 api.add_resource(get_box_by_tags, '/api/boxes/tags')
 api.add_resource(get_box_by_size, '/api/boxes/size')
+api.add_resource(get_customers, '/api/customers')
 
 
 @app.route('/', methods=['GET', 'POST'])
