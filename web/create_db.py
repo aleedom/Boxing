@@ -255,8 +255,8 @@ def add_tag(names, tag):
         tag: 'a_tag'
     """
     for name in names:
-        b = Box.query.filter_by(name=name).first()
-        b.tags.add(tag)
+        b = Box.query.filter_by(box_name=name).first()
+        b.box_tags.add(tag)
         db.session.commit()
 
 

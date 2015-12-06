@@ -40,28 +40,61 @@ def ArraySet(_type, dimensions=1):
 
 
 class Box(db.Model):
-    __tablename__ = 'Boxes'
-
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String, nullable=False, unique=True)
-    tags = db.Column(ArraySet(db.String))
-    length = db.Column(db.Integer, nullable=False)
-    width = db.Column(db.Integer, nullable=False)
-    height = db.Column(db.Integer, nullable=False)
+    box_id = db.Column(db.Integer, primary_key=True)
+    box_name = db.Column(db.String, nullable=False, unique=True)
+    box_tags = db.Column(ArraySet(db.String))
+    box_length = db.Column(db.Integer, nullable=False)
+    box_width = db.Column(db.Integer, nullable=False)
+    box_height = db.Column(db.Integer, nullable=False)
 
     def __init__(self, name, tags, length=1, width=1, height=1):
-        self.name = name
-        self.tags = tags
-        self.length = length
-        self.width = width
-        self.height = height
+        self.box_name = name
+        self.box_tags = tags
+        self.box_length = length
+        self.box_width = width
+        self.box_height = height
 
     def serialize(self):
         return {
-            'id':       self.id,
-            'name':     self.name,
-            'tags':     list(self.tags),
-            'length':   self.length,
-            'width':    self.width,
-            'height':   self.height
+            'id':       self.box_id,
+            'name':     self.box_name,
+            'tags':     list(self.box_tags),
+            'length':   self.box_length,
+            'width':    self.box_width,
+            'height':   self.box_height
         }
+
+
+class Customer(db.Model):
+    customer_id = db.Column(db.Integer, primary_key=True)
+    customer_firstname = db.Column(db.String, nullable=False, unique=False)
+    customer_lastname = db.Column(db.String, nullable=False, unique=False)
+    customer_email = db.Column(db.String, nullable=False, unique=True)
+    customer_orders = db.relationship('Order', backref='Customer', lazy='dynamic')
+
+
+class Merchandise(db.Model):
+    merchandise_id = db.Column(db.Integer, primary_key=True)
+    merchandise_name = db.Column(db.String, nullable=False)
+    merchandise_price = db.Column(db.Integer)
+    merchandise_length = db.Column(db.Integer, nullable=True)
+    merchandise_width = db.Column(db.Integer, nullable=True)
+    merchandise_height = db.Column(db.Integer, nullable=True)
+
+
+boxes = db.Table('boxes',
+                 db.Column('box_id', db.Integer, db.ForeignKey('box.box_id')),
+                 db.Column('order_id', db.Integer, db.ForeignKey('order.order_id'))
+                 )
+merch = db.Table('merch',
+                 db.Column('merchandise_id', db.Integer, db.ForeignKey('merchandise.merchandise_id')),
+                 db.Column('order_id', db.Integer, db.ForeignKey('order.order_id'))
+                 )
+
+
+class Order(db.Model):
+    order_id = db.Column(db.Integer, primary_key=True)
+    order_customerid = db.Column(db.Integer, db.ForeignKey('customer.customer_id'))
+    boxes = db.relationship('Box', secondary=boxes, backref=db.backref('boxes', lazy='dynamic'), nullable=True)
+    merch = db.relationship('Merchandise', secondary=merch, backref=db.backref('merch', lazy='dynamic'))
+    order_date = db.Column(db.DateTime)

@@ -51,21 +51,21 @@ class fit_boxes(Resource):
         if owned and not_owned:
             # use all boxes
             for box in db_boxes:
-                boxes[box.name] = Package((box.length, box.width, box.height))
+                boxes[box.box_name] = Package((box.box_length, box.box_width, box.box_height))
 
         elif owned:
             # if owned is true then not_owned is false
             # therefor only use owned boxes
             for box in db_boxes:
-                if box.tags.intersection({'owned'}) == {'owned'}:
-                    boxes[box.name] = Package((box.length, box.width, box.height))
+                if box.box_tags.intersection({'owned'}) == {'owned'}:
+                    boxes[box.box_name] = Package((box.box_length, box.box_width, box.box_height))
 
         else:
             # not_owned must be true and owned must be false
             # therefor only use not owned boxes
             for box in db_boxes:
-                if box.tags.intersection({'owned'}) != {'owned'}:
-                    boxes[box.name] = Package((box.length, box.width, box.height))
+                if box.box_tags.intersection({'owned'}) != {'owned'}:
+                    boxes[box.box_name] = Package((box.box_length, box.box_width, box.box_height))
 
         # do the calculation
         # input is a list of packages to be boxed, and a dictionary {name: package_object} of possible boxes to be used
@@ -86,10 +86,10 @@ class get_all_boxes(Resource):
 class get_box_by_tags(Resource):
     def get(self):
         boxes = Box.query.all()
-        user_tags = set(request.args.get('tags').split(','))
+        user_tags = set(request.args.get('box_tags').split(','))
         return [box.serialize()
                 for box in boxes
-                if box.tags.intersection(user_tags) == user_tags]
+                if box.box_tags.intersection(user_tags) == user_tags]
 
 
 class get_box_by_size(Resource):
@@ -97,24 +97,26 @@ class get_box_by_size(Resource):
 
         sizes = map(int, request.args.get('size').split(','))
         if len(sizes) == 1:
-            boxes = Box.query.filter((Box.length == sizes[0]) | (Box.width == sizes[0]) | (Box.height == sizes[0]))
+            boxes = Box.query.filter((Box.box_length == sizes[0]) |
+                                     (Box.box_width == sizes[0]) |
+                                     (Box.box_height == sizes[0]))
         elif len(sizes) == 2:
             # very ugly dont know if i can do better
             boxes = Box.query.filter(
-                ((Box.length == sizes[0]) & (Box.width == sizes[1])) |
-                ((Box.length == sizes[1]) & (Box.width == sizes[0])) |
-                ((Box.length == sizes[0]) & (Box.height == sizes[1])) |
-                ((Box.length == sizes[1]) & (Box.height == sizes[0])) |
-                ((Box.width == sizes[0]) & (Box.height == sizes[1])) |
-                ((Box.width == sizes[1]) & (Box.height == sizes[0])))
+                ((Box.box_length == sizes[0]) & (Box.box_width == sizes[1])) |
+                ((Box.box_length == sizes[1]) & (Box.box_width == sizes[0])) |
+                ((Box.box_length == sizes[0]) & (Box.box_height == sizes[1])) |
+                ((Box.box_length == sizes[1]) & (Box.box_height == sizes[0])) |
+                ((Box.box_width == sizes[0]) & (Box.box_height == sizes[1])) |
+                ((Box.box_width == sizes[1]) & (Box.box_height == sizes[0])))
         elif len(sizes) == 3:
             boxes = Box.query.filter(
-                ((Box.length == sizes[0]) & (Box.width == sizes[1]) & (Box.height == sizes[2])) |
-                ((Box.length == sizes[0]) & (Box.width == sizes[2]) & (Box.height == sizes[1])) |
-                ((Box.length == sizes[1]) & (Box.width == sizes[2]) & (Box.height == sizes[0])) |
-                ((Box.length == sizes[1]) & (Box.width == sizes[0]) & (Box.height == sizes[2])) |
-                ((Box.length == sizes[2]) & (Box.width == sizes[1]) & (Box.height == sizes[0])) |
-                ((Box.length == sizes[2]) & (Box.width == sizes[0]) & (Box.height == sizes[1])))
+                ((Box.box_length == sizes[0]) & (Box.box_width == sizes[1]) & (Box.box_height == sizes[2])) |
+                ((Box.box_length == sizes[0]) & (Box.box_width == sizes[2]) & (Box.box_height == sizes[1])) |
+                ((Box.box_length == sizes[1]) & (Box.box_width == sizes[2]) & (Box.box_height == sizes[0])) |
+                ((Box.box_length == sizes[1]) & (Box.box_width == sizes[0]) & (Box.box_height == sizes[2])) |
+                ((Box.box_length == sizes[2]) & (Box.box_width == sizes[1]) & (Box.box_height == sizes[0])) |
+                ((Box.box_length == sizes[2]) & (Box.box_width == sizes[0]) & (Box.box_height == sizes[1])))
         else:
             return "invalid input"
         return [box.serialize() for box in boxes]
